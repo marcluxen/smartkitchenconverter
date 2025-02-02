@@ -13,8 +13,10 @@ jobs:
         python-version: '3.9'
     - name: Install Nuitka
       run: pip install nuitka
+    - name: List directory contents
+      run: dir
     - name: Build executable
-      run: python -m nuitka --standalone --onefile --windows-disable-console main.py
+      run: python -m nuitka --standalone --onefile --windows-disable-console --include-data-dir=.=. main.py
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
