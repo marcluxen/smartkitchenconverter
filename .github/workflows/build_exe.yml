@@ -1,3 +1,6 @@
+- name: Install Nuitka
+  run: pip install nuitka
+
 name: Build Windows Executable
 
 on:
