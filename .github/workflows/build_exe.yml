@@ -7,10 +7,6 @@ jobs:
     - uses: actions/checkout@v4
     - run: pip install nuitka
     - run: python -m nuitka --standalone --onefile --windows-disable-console --include-data-dir=.=. --assume-yes-for-downloads main.py
-    - name: Attempt UPX Compression
-      run: |
-        choco install upx -y
-        upx --best --lzma main.exe || echo "UPX compression failed, continuing with uncompressed executable"
     - uses: actions/upload-artifact@v4
       with:
         name: main.exe
