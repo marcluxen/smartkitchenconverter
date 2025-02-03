@@ -5,16 +5,58 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v4
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.9'
-    - name: Install PyInstaller
-      run: pip install pyinstaller
-    - name: Build with PyInstaller
-      run: pyinstaller --name=YourAppName --windowed --onefile main.py
-    - name: Upload artifact
+
+    - name: Install Dependencies
+      run: |
+        pip install --upgrade pip
+        pip install kivy cx_Freeze
+
+    - name: Create and Run cx_Freeze Setup
+      run: |
+        echo "import sys
+        from cx_Freeze import setup, Executable
+
+        build_exe_options = {
+            'packages': [
+                'kivy',
+                'kivy.uix.boxlayout',
+                'kivy.uix.gridlayout',
+                'kivy.uix.textinput',
+                'kivy.uix.button',
+                'kivy.uix.spinner',
+                'kivy.uix.scrollview',
+                'kivy.core.clipboard',
+                'kivy.uix.label',
+                'kivy.uix.widget',
+                'kivy.graphics',
+                'kivy.uix.popup',
+                'kivy.app',
+                'kivy.uix.screenmanager',
+                'kivy.uix.floatlayout',
+                'kivy.properties',
+                'kivy.core.window'
+            ],
+            'includes': ['json', 'os'],
+            'excludes': []
+        }
+
+        base = 'Win32GUI' if sys.platform == 'win32' else None
+
+        setup(
+            name='SmartKitchenConverter',
+            version='1.0',
+            options={'build_exe': build_exe_options},
+            executables=[Executable('main.py', base=base)]
+        )" > setup.py
+        python setup.py build
+
+    - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: YourAppName
-        path: dist/YourAppName.exe
+        name: SmartKitchenConverter
+        path: build/exe.win-amd64-3.9/
