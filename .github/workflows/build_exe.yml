@@ -5,9 +5,16 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v4
-    - run: pip install nuitka
-    - run: python -m nuitka --standalone --onefile --windows-disable-console --include-data-dir=.=. --assume-yes-for-downloads main.py
-    - uses: actions/upload-artifact@v4
+    - name: Set up Python
+      uses: actions/setup-python@v4
       with:
-        name: main.exe
-        path: main.exe
+        python-version: '3.9'
+    - name: Install PyInstaller
+      run: pip install pyinstaller
+    - name: Build with PyInstaller
+      run: pyinstaller --name=YourAppName --windowed --onefile main.py
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: YourAppName
+        path: dist/YourAppName.exe
